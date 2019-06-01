@@ -1,0 +1,25 @@
+{
+  "name": "cypress-plugin-macros",
+  "version": "0.1",
+  "description": "Cypress plugin that works with gherkin to add macro support",
+  "main": "src",
+  "scripts": {
+    "test": "cypress run",
+    "start": "cypress open"
+  },
+  "keywords": [
+    "cypress",
+    "plugin"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/Bkucera/cypress-plugin-retries.git"
+  },
+  "author": "Hillary Hueter",
+  "license": "MIT",
+  "devDependencies": {},
+  "dependencies": {
+    "cypress": "^3.3.1",
+    "date-fns": "^1.30.1"
+  }
+}

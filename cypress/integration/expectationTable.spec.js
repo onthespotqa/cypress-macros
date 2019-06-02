@@ -87,4 +87,16 @@ describe('defineTable', () => {
   ]
   expect(expectationTable(dataTable)).to.eql(expected)
  })
+
+ it('replaces multiple macros in the string', () => {
+  let dataTable = [
+   ["What is the Perferred Weapon?"],
+   ["{cap.name} perferred is a {cap.weapon}"]
+  ]
+  let expected = [
+   ["What is the Perferred Weapon?"],
+   ["Captain America perferred is a Shield"]
+  ]
+  expect(expectationTable(dataTable)).to.eql(expected)
+ })
 })

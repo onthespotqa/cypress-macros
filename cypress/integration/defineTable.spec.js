@@ -5,27 +5,27 @@ import { cyGetAll, findAllMacros, findallVarRefs } from '../../src/defineTable'
 
 describe('define the expectation table', () => {
  describe('findAllMacros', () => {
-  it('is not an empty array', () => {
+  xit('is not an empty array', () => {
    let expectation = ["Array", "{@X.name}"]
 
    expect(findAllMacros(expectation)).to.not.be.empty
    expect(findAllMacros(expectation)).to.be.instanceOf(Array)
   });
 
-  it('returns all values that meet the pattern', () => {
+  xit('returns all values that meet the pattern', () => {
    let expectation = ["not dynamic", "{@X.name}", "{@X1.first_name} {@X1.last_name}", "{@X2.last_name}, {@X2.first_name}", "{today.short}"]
    expect(findAllMacros(expectation)).to.eql(["{@X.name}", "{@X1.first_name} {@X1.last_name}", "{@X2.last_name}, {@X2.first_name}", "{today.short}"])
   });
  });
 
  describe('findalsVarRefs', () => {
-  it('is not an empty array', () => {
+  xit('is not an empty array', () => {
    let expectation = ["not dynamic", "{@X.name}", "{@X1.first_name} {@X1.last_name}", "{@X2.last_name}, {@X2.first_name}", "{today.short}"]
    expect(findallVarRefs(expectation)).to.not.be.empty
    expect(findallVarRefs(expectation)).to.be.instanceOf(Array)
   });
 
-  it('is returns only the uniq variable', () => {
+  xit('is returns only the uniq variable', () => {
    let expectation = ["not dynamic", "{@X.name}", "{@X1.first_name} {@X1.last_name}", "{@X2.last_name}, {@X2.first_name}", "{@X2.name}", "{today.short}"]
    expect(findallVarRefs(expectation)).to.eql(["@X", "@X1", "@X2"])
   });
@@ -37,10 +37,11 @@ describe('define the expectation table', () => {
    cy.fixture('example').as('X')
    cy.fixture('example2').as('X2')
    let varRefs = ["@X", "@X2"]
-   cyGetAll(varRefs)
+   console.log(cyGetAll(varRefs));
+   expect(cyGetAll(varRefs)).to.not.be.empty
    cy.log(cyGetAll(varRefs)['@X'])
    //expect(cyGetAll(varRefs)["@X"]).to.not.be.empty
-   //expect(cyGetAll(varRefs)["@X"]).to.eql({ "name": "apples" })
+   expect(cyGetAll(varRefs)["@X"]).to.eql({ "name": "apples" })
 
    //expect(all).to.be.eql([{ "name": "apples" }]);
   });

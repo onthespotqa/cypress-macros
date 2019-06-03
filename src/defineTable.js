@@ -13,14 +13,12 @@ function trim(s) {
 //Get the Results of all the Variables from findAllVarRefs
 export function cyGetAll(names) {
   let chain = cy;
-  var values = {};
+  const values = {};
   names.forEach(name => {
-    chain.get(name).then(value => {
-      values[name] = value
-    }
-    );
-  })
-  debugger;
+    chain = chain = chain.get(name).then(value => (values[name] = value));
+  });
+
+  console.log(values);
   return chain.then(() => values);
 }
 

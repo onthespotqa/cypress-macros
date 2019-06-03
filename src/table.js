@@ -3,6 +3,10 @@ import isEqual from 'lodash/isEqual';
 import orderBy from 'lodash/orderBy';
 import ArrayComparer from './ArrayComparer';
 
+//TODO: Handle large Percentages for Dynamic Ownership Percentages
+//TODO: Handle Dollar Amounts for Contributed & Contributed
+//TODO: Handle Dollar Amounts for Unreturned Capital
+
 function assertTableExpectationsMatched(arrayComparer, type) {
   invariant(
     arrayComparer.unmatchedExpectedElements.length === 0,

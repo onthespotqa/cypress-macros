@@ -1,10 +1,10 @@
 /// <reference types="cypress"/>
 const _ = Cypress._
 import { expectationTable } from '../../src/expectation'
-import { format } from 'date-fns';
 
-describe('defineTable', () => {
+describe('expectationTable', () => {
  beforeEach(function () {
+  console.log('am i run?')
   cy.fixture('thor').storeAs('thor');
   cy.fixture('cap').storeAs('cap');
   cy.fixture('iron').storeAs('iron');
@@ -62,7 +62,6 @@ describe('defineTable', () => {
  })
 
  it('returns date formats for today', () => {
-  const now = new Date()
   let dataTable = [
    ["Short", "Long", "Current Year"],
    ["{today.short}", "{today.long}", "{today.year}"]

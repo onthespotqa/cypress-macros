@@ -6,6 +6,7 @@ describe('testStore', () => {
 
  describe('stores Fixtures', () => {
   beforeEach(function () {
+   console.log('am i run to?')
    cy.fixture('thor').storeAs('thor');
    cy.fixture('cap').storeAs('cap');
    cy.fixture('iron').storeAs('iron');

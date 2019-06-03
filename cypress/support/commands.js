@@ -30,9 +30,20 @@ export const testStore = {}
 
 
 Cypress.Commands.add('storeAs', { prevSubject: true }, (value, propName) => {
+ console.log('prop: ' + propName + ' value: ' + value)
  testStore[propName] = value;
+ console.log(testStore);
  return value;
 })
+
+
+// Cypress.Commands.add('clean', () => {
+//  testStore[propName] = value;
+//  return value;
+// })
+
+
+export const regex = new RegExp(/\{(.*?)\}/g);
 
 // Alternatively you can use CommonJS syntax:
 // require('./commands')

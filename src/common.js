@@ -1,5 +1,6 @@
 let _lodash = require('lodash');
 import { testStore } from '../cypress/support/commands.js'
+
 let regex = new RegExp(/\{(.*?)\}/g)
 
 export function trim(s) {

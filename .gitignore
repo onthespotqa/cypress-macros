@@ -1,5 +1,7 @@
-node_modules
 cypress/videos
-.DS_Store
 cypress/screenshots
-yarn-error.log
+dist
+lib
+node_modules
+.DS_Store
+*.log

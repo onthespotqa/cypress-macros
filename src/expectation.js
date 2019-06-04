@@ -1,5 +1,5 @@
-import invariant from 'invariant'
 import {get as lodashGet} from 'lodash' 
+import {instantiate} from './constants'
 import {lex} from './lex'
 
 //TODO: Handle large Percentages for Dynamic Ownership Percentages
@@ -21,10 +21,8 @@ function cyGetAll(names) {
 // a proper Cypress variable reference including the @ character.
 function canonicalize(name) {
   switch(name.slice(0,1)) {
-    case '@':
+    case '@', '$':
       return name;
-    case '$':
-      throw new Error('TODO - support macro constants')
     default:
       return `@${name}`
   }
@@ -36,11 +34,14 @@ function canonicalize(name) {
 export function expectationTable(dataTable) {
   //Build Out the Variables to Look For
   const allVariables = {};
+
   dataTable.forEach(expectation => 
     expectation.forEach(cell => {
       lex(cell, {onMacro: t => {
-        const [name] = t.split('.', 2)
-        allVariables[canonicalize(name)] = true;
+        let [name] = t.split('.', 2)
+        name = canonicalize(name)
+        if(name.startsWith('@'))
+          allVariables[name] = true;
       }})
     })
   )
@@ -49,16 +50,24 @@ export function expectationTable(dataTable) {
   return cyGetAll(Object.keys(allVariables)).then(lookupTable => {
     const outputTable = [];
 
+    const macroConstants = instantiate();
+
     dataTable.forEach(expectation => {
       const outputRow = [];
       expectation.forEach(cell => {
         const outputCell = []
         lex(cell, {onText: t => outputCell.push(t), onMacro: t => {
-          const [name, path] = t.split('.', 2)
-          const object = lookupTable[canonicalize(name)]
-          invariant(object, `expectationTable: macro references unbound variable "${name}"`)
-          const substitutedValue = lodashGet(object, path)
-          outputCell.push(substitutedValue)
+          let [name, path] = t.split('.', 2)
+          name = canonicalize(name)
+          if(name.startsWith('@')) { // Variable reference
+            const object = lookupTable[name]
+            const substitutedValue = lodashGet(object, path)
+            outputCell.push(substitutedValue)
+          } else { // Constant reference            
+            const object = macroConstants[name.slice(1)]
+            const substitutedValue = lodashGet(object, path)
+            outputCell.push(substitutedValue)
+          }
         }})
         outputRow.push(outputCell.join(''))
       })

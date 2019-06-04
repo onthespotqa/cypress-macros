@@ -98,4 +98,31 @@ describe('expectationTable', () => {
   ]
   expectationTable(dataTable).should('eql', expected)
  })
+
+ it('replaces multiple macros in the string', () => {
+  let dataTable = [
+   ["First, Last"],
+   ["{cap.name}, {cap.weapon}"]
+  ]
+  let expected = [
+   ["First, Last"],
+   ["Captain America, Shield"]
+  ]
+  expectationTable(dataTable).should('eql', expected)
+ })
+
+ it('replaces multiple macros in the string', () => {
+  let dataTable = [
+   ["MacroText"],
+   ["{cap.name}Pending Transfer"]
+  ]
+  let expected = [
+   ["MacroText"],
+   ["Captain AmericaPending Transfer"]
+  ]
+  expectationTable(dataTable).should('eql', expected)
+ })
+ 
+
+ 
 })

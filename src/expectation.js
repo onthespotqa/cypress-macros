@@ -1,3 +1,5 @@
+import invariant from 'invariant'
+import {get as lodashGet} from 'lodash' 
 import {lex} from './lex'
 
 //TODO: Handle large Percentages for Dynamic Ownership Percentages
@@ -5,55 +7,64 @@ import {lex} from './lex'
 //TODO: Handle Dollar Amounts for Unreturned Capital
 
 //Get the Results of all the Variables from findAllVarRefs
-export function cyGetAll(names) {
+function cyGetAll(names) {
   let chain = cy;
   const values = {};
   names.forEach(name => {
     chain = chain = chain.get(name).then(value => (values[name] = value));
   });
 
-  console.log(values);
   return chain.then(() => values);
 }
 
-//In the DataTable row, find all macros used. Return them in the order in which they occur in the input strings.
-export function findAllMacros(expectation) {
-  const macros = [];
-  expectation.forEach(str => lex(str, {onMacro: t => macros.push(t)}))
-  return macros;
+// Given the first word of dot-separated macro expression, transform it into
+// a proper Cypress variable reference including the @ character.
+function canonicalize(name) {
+  switch(name.slice(0,1)) {
+    case '@':
+      return name;
+    case '$':
+      throw new Error('TODO - support macro constants')
+    default:
+      return `@${name}`
+  }
 }
 
-//In the Result of findAllMacros, then strip the variable @X part and then return the uniq set
-export function findAllVarRefs(macroContents) {
-  const uniq = {};
-  console.log('ts>', macroContents)
-  macroContents.forEach(t => {
-    const [prefix] = t.split('.', 2)
-    console.log('ts>  ', prefix)
-    if(prefix.startsWith('@')) uniq[prefix] = true
-  })
-  return Object.keys(uniq)
-}
-
-//Evaluations all the Macros and finds their cypress values lookupTable from cyGetAll
-export function evalAllMacros(expectation, lookupTable) {
-
-}
-
-//Builds the expectationTable to pass to expectTableContent
+// Given a data table (2D array), replace all macros and return a Cypress
+// chainable that resolves to the macro-substituted result (another 2D
+// array with the same dimension as dataTable).
 export function expectationTable(dataTable) {
-  var outputTable = [];
-  dataTable.forEach(expectation => {
-    cyGetAll(findAllVarRefs(findAllMacros(expectation))).then(
-      lookupTable => outputTable.push(evalAllMacros(dataTable, lookupTable))
-    )
+  //Build Out the Variables to Look For
+  const allVariables = {};
+  dataTable.forEach(expectation => 
+    expectation.forEach(cell => {
+      lex(cell, {onMacro: t => {
+        const [name] = t.split('.', 2)
+        allVariables[canonicalize(name)] = true;
+      }})
+    })
+  )
+
+  // Asynchronously resolve all distinct variables, then substitute.
+  return cyGetAll(Object.keys(allVariables)).then(lookupTable => {
+    const outputTable = [];
+
+    dataTable.forEach(expectation => {
+      const outputRow = [];
+      expectation.forEach(cell => {
+        const outputCell = []
+        lex(cell, {onText: t => outputCell.push(t), onMacro: t => {
+          const [name, path] = t.split('.', 2)
+          const object = lookupTable[canonicalize(name)]
+          invariant(object, `expectationTable: macro references unbound variable "${name}"`)
+          const substitutedValue = lodashGet(object, path)
+          outputCell.push(substitutedValue)
+        }})
+        outputRow.push(outputCell.join(''))
+      })
+      outputTable.push(outputRow)
+    })
+
+    return outputTable;
   })
-  return cy.wrap(outputTable);
 }
-
-export function replaceMacro(match) {
-  const alias = trim(match).split(".")[0];
-  const attr = trim(match).split(".")[1];
-  return 'TODO';
-}
-

@@ -1,8 +1,51 @@
 /// <reference types="cypress"/>
 const _ = Cypress._
-import { expectationTable } from '../../src/expectation'
+import { expectationTable, findAllMacros, findAllVarRefs, cyGetAll } from '../../src/expectation'
 
-describe('expectationTable', () => {
+
+describe('define the expectation table', () => {
+  describe('findAllMacros', () => {
+   it('is not an empty array', () => {
+    let expectation = ["Array", "{@X.name}"]
+ 
+    expect(findAllMacros(expectation)).to.not.be.empty
+    expect(findAllMacros(expectation)).to.be.instanceOf(Array)
+   });
+ 
+   it('returns all values that meet the pattern', () => {
+    let expectation = ["not dynamic", "{@X.name}", "{@X1.first_name} {@X1.last_name}", "{@X2.last_name}, {@X2.first_name}", "{today.short}"]
+    expect(findAllMacros(expectation)).to.eql(["@X.name", "@X1.first_name", "@X1.last_name", "@X2.last_name", "@X2.first_name", "today.short"])
+   });
+  });
+ 
+  describe('findAllVarRefs', () => {
+   it('handles corner cases', () => {
+     expect(findAllVarRefs([])).to.eql([])
+     expect(findAllVarRefs([])).to.eql([])
+   })
+   it('returns only the uniq variable', () => {
+    let expectation = ["@X.name", "@X1.first_name", "@X1.last_name", "@X2.last_name", "@X2.first_name", "@X2.name", "today.short"]
+    expect(findAllVarRefs(expectation)).to.eql(["@X", "@X1", "@X2"])
+   });
+  });
+ 
+  describe('cyGetAll', () => {
+ 
+   it('returns cypress variables in the system', () => {
+    cy.fixture('cap').as('cap')
+    cy.fixture('iron').as('iron')
+    
+    cyGetAll(["@cap", "@iron"]).then(result => {
+      expect(result).to.not.be.empty
+      expect(result['@cap']).to.include({name: 'Captain America'})
+      expect(result['@iron']).to.include({name: 'Iron Man'})
+    })
+   });
+  });
+ 
+ })
+ 
+describe.skip('expectationTable', () => {
  beforeEach(function () {
   console.log('am i run?')
   cy.fixture('thor').storeAs('thor');

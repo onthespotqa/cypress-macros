@@ -2,22 +2,22 @@
 const _ = Cypress._
 import { expectationTable } from '../../src/expectation'
 
+
 describe('expectationTable', () => {
  beforeEach(function () {
-  console.log('am i run?')
-  cy.fixture('thor').storeAs('thor');
-  cy.fixture('cap').storeAs('cap');
-  cy.fixture('iron').storeAs('iron');
-  cy.fixture('date').storeAs('today');
+  cy.fixture('thor').as('thor');
+  cy.fixture('cap').as('cap');
+  cy.fixture('iron').as('iron');
+  cy.fixture('date').as('today');
  });
 
 
  it('returns the table passed in if there are no macros', () => {
-  let dataTable = [
+  const dataTable = [
    ["Name", "Weapon"],
    ["Captain America", "Shield"]
   ]
-  expect(expectationTable(dataTable)).to.eql(dataTable)
+  expectationTable(dataTable).should('eql', dataTable)
  })
 
 
@@ -30,7 +30,7 @@ describe('expectationTable', () => {
    ["Name", "Weapon"],
    ["Captain America", "Shield"]
   ]
-  expect(expectationTable(dataTable)).to.eql(expected)
+  expectationTable(dataTable).should('eql', expected)  
  });
 
  it('returns multiple rows with macros', () => {
@@ -44,7 +44,7 @@ describe('expectationTable', () => {
    ["Captain America", "Shield"],
    ["Iron Man", "Gauntlet"]
   ]
-  expect(expectationTable(dataTable)).to.eql(expected)
+  expectationTable(dataTable).should('eql', expected)
  })
 
  it('returns multiple rows with macros', () => {
@@ -58,19 +58,19 @@ describe('expectationTable', () => {
    ["Captain America", "Shield", "1"],
    ["Iron Man", "Gauntlet", "3"]
   ]
-  expect(expectationTable(dataTable)).to.eql(expected)
+  expectationTable(dataTable).should('eql', expected)
  })
 
  it('returns date formats for today', () => {
   let dataTable = [
    ["Short", "Long", "Current Year"],
-   ["{today.short}", "{today.long}", "{today.year}"]
+   ["{$today.short}", "{$today.long}", "{$today.year}"]
   ]
   let expected = [
    ["Short", "Long", "Current Year"],
    ["6/1/19", "06/01/2019", "2019"]
   ]
-  expect(expectationTable(dataTable)).to.eql(expected)
+  expectationTable(dataTable).should('eql', expected)
  })
 
  it('returns a mixture of strings and dates', () => {
@@ -84,7 +84,7 @@ describe('expectationTable', () => {
    ["Captain America", "Shield", "1", "6/1/19"],
    ["Iron Man", "Gauntlet", "3", "06/01/2019"]
   ]
-  expect(expectationTable(dataTable)).to.eql(expected)
+  expectationTable(dataTable).should('eql', expected)
  })
 
  it('replaces multiple macros in the string', () => {
@@ -96,6 +96,33 @@ describe('expectationTable', () => {
    ["What is the Perferred Weapon?"],
    ["Captain America perferred is a Shield"]
   ]
-  expect(expectationTable(dataTable)).to.eql(expected)
+  expectationTable(dataTable).should('eql', expected)
  })
+
+ it('replaces multiple macros in the string', () => {
+  let dataTable = [
+   ["First, Last"],
+   ["{cap.name}, {cap.weapon}"]
+  ]
+  let expected = [
+   ["First, Last"],
+   ["Captain America, Shield"]
+  ]
+  expectationTable(dataTable).should('eql', expected)
+ })
+
+ it('replaces multiple macros in the string', () => {
+  let dataTable = [
+   ["MacroText"],
+   ["{cap.name}Pending Transfer"]
+  ]
+  let expected = [
+   ["MacroText"],
+   ["Captain AmericaPending Transfer"]
+  ]
+  expectationTable(dataTable).should('eql', expected)
+ })
+ 
+
+ 
 })

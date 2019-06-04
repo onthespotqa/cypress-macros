@@ -1,6 +1,7 @@
 /// <reference types="cypress"/>
 const _ = Cypress._
 import { expectationTable } from '../../src/expectation'
+import { format } from 'date-fns';
 
 
 describe('expectationTable', () => {
@@ -8,7 +9,6 @@ describe('expectationTable', () => {
   cy.fixture('thor').as('thor');
   cy.fixture('cap').as('cap');
   cy.fixture('iron').as('iron');
-  cy.fixture('date').as('today');
  });
 
 
@@ -30,7 +30,7 @@ describe('expectationTable', () => {
    ["Name", "Weapon"],
    ["Captain America", "Shield"]
   ]
-  expectationTable(dataTable).should('eql', expected)  
+  expectationTable(dataTable).should('eql', expected)
  });
 
  it('returns multiple rows with macros', () => {
@@ -62,27 +62,29 @@ describe('expectationTable', () => {
  })
 
  it('returns date formats for today', () => {
+  const now = new Date();
   let dataTable = [
    ["Short", "Long", "Current Year"],
    ["{$today.short}", "{$today.long}", "{$today.year}"]
   ]
   let expected = [
    ["Short", "Long", "Current Year"],
-   ["6/1/19", "06/01/2019", "2019"]
+   [format(now, 'M/D/YY'), format(now, 'MM/DD/YYYY'), format(now, 'YYYY')]
   ]
   expectationTable(dataTable).should('eql', expected)
  })
 
  it('returns a mixture of strings and dates', () => {
+  const now = new Date();
   let dataTable = [
    ["Name", "Weapon", "Power Level", "Rating Date"],
-   ["{cap.name}", "{cap.weapon}", "1", "{today.short}"],
-   ["{iron.name}", "{iron.weapon}", "3", "{today.long}"]
+   ["{cap.name}", "{cap.weapon}", "1", "{$today.short}"],
+   ["{iron.name}", "{iron.weapon}", "3", "{$today.long}"]
   ]
   let expected = [
    ["Name", "Weapon", "Power Level", "Rating Date"],
-   ["Captain America", "Shield", "1", "6/1/19"],
-   ["Iron Man", "Gauntlet", "3", "06/01/2019"]
+   ["Captain America", "Shield", "1", format(now, 'M/D/YY')],
+   ["Iron Man", "Gauntlet", "3", format(now, 'MM/DD/YYYY')]
   ]
   expectationTable(dataTable).should('eql', expected)
  })
@@ -99,7 +101,7 @@ describe('expectationTable', () => {
   expectationTable(dataTable).should('eql', expected)
  })
 
- it('replaces multiple macros in the string', () => {
+ it('replaces multiple macros in the same cell', () => {
   let dataTable = [
    ["First, Last"],
    ["{cap.name}, {cap.weapon}"]
@@ -111,7 +113,7 @@ describe('expectationTable', () => {
   expectationTable(dataTable).should('eql', expected)
  })
 
- it('replaces multiple macros in the string', () => {
+ it('replaces multiple the macro but keeps other text', () => {
   let dataTable = [
    ["MacroText"],
    ["{cap.name}Pending Transfer"]
@@ -122,7 +124,7 @@ describe('expectationTable', () => {
   ]
   expectationTable(dataTable).should('eql', expected)
  })
- 
 
- 
+
+
 })

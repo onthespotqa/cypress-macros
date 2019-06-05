@@ -1,11 +1,21 @@
 {
   "name": "cypress-plugin-macros",
-  "version": "0.1",
+  "version": "0.0.0",
+  "private": true,
   "description": "Cypress plugin that works with gherkin to add macro support",
-  "main": "src",
+  "main": "lib/index.js",
   "scripts": {
+    "build": "yarn clean:build && yarn build:types && yarn build:js",
+    "build:types": "tsc --emitDeclarationOnly",
+    "build:js": "babel src --out-dir lib --extensions \".js,.jsx,.ts,.tsx\" --config-file ./.prod.babelrc",
+    "bundle": "webpack",
+    "clean:build": "rimraf lib",
+    "clean:bundle": "rimraf dist",
+    "lint": "eslint src/**/*.ts",
+    "lint:fix": "eslint --fix src/**/*.ts",
+    "start": "cypress open",
     "test": "cypress run",
-    "start": "cypress open"
+    "type-check": "tsc --noEmit"
   },
   "keywords": [
     "cypress",
@@ -17,7 +27,26 @@
   },
   "author": "Hillary Hueter",
   "license": "MIT",
-  "devDependencies": {},
+  "devDependencies": {
+    "@babel/cli": "^7.2.0",
+    "@babel/core": "^7.2.0",
+    "@babel/plugin-proposal-class-properties": "^7.2.1",
+    "@babel/plugin-proposal-object-rest-spread": "^7.2.0",
+    "@babel/preset-env": "^7.2.0",
+    "@babel/preset-typescript": "^7.1.0",
+    "@types/jest": "^24.0.6",
+    "@typescript-eslint/eslint-plugin": "^1.4.0",
+    "@typescript-eslint/parser": "^1.4.0",
+    "babel-loader": "^8.0.5",
+    "eslint": "^5.14.1",
+    "eslint-config-airbnb": "^17.1.0",
+    "eslint-config-prettier": "^4.0.0",
+    "eslint-plugin-import": "^2.16.0",
+    "fork-ts-checker-webpack-plugin": "^0.5.2",
+    "typescript": "^3.2.2",
+    "webpack": "^4.29.5",
+    "webpack-cli": "^3.2.3"
+  },
   "dependencies": {
     "cypress": "^3.3.1",
     "date-fns": "^1.30.1",

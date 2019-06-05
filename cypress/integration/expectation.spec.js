@@ -101,7 +101,7 @@ describe('expectationTable', () => {
   expectationTable(dataTable).should('eql', expected)
  })
 
- it('replaces multiple macros in the same cell', () => {
+ it('replaces multiple macros in the string', () => {
   let dataTable = [
    ["First, Last"],
    ["{cap.name}, {cap.weapon}"]
@@ -113,7 +113,7 @@ describe('expectationTable', () => {
   expectationTable(dataTable).should('eql', expected)
  })
 
- it('replaces multiple the macro but keeps other text', () => {
+ it('replaces multiple macros in the string', () => {
   let dataTable = [
    ["MacroText"],
    ["{cap.name}Pending Transfer"]

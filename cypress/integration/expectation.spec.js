@@ -125,6 +125,18 @@ describe('expectationTable', () => {
   expectationTable(dataTable).should('eql', expected)
  })
 
+ it.only('replaces a macro starting with @', () => {
+  let dataTable = [
+   ["MacroText"],
+   ["{@iron.name}Pending Transfer"]
+  ]
+  let expected = [
+   ["MacroText"],
+   ["Iron ManPending Transfer"]
+  ]
+  expectationTable(dataTable).should('eql', expected)
+ })
+
 
 
 })

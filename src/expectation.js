@@ -1,6 +1,6 @@
-import {get as lodashGet} from 'lodash' 
-import {instantiate} from './constants'
-import {lex} from './lex'
+import { get as lodashGet } from 'lodash'
+import { instantiate } from './constants'
+import { lex } from './lex'
 
 //TODO: Handle large Percentages for Dynamic Ownership Percentages
 //TODO: Handle Dollar Amounts for Contributed & Contributed
@@ -19,9 +19,12 @@ function cyGetAll(names) {
 
 // Given the first word of dot-separated macro expression, transform it into
 // a proper Cypress variable reference including the @ character.
-function canonicalize(name) {
-  switch(name.slice(0,1)) {
-    case '@', '$':
+export function canonicalize(name) {
+  debugger
+  switch (name.slice(0, 1)) {
+    case '@':
+      return name;
+    case '$':
       return name;
     default:
       return `@${name}`
@@ -35,14 +38,16 @@ export function expectationTable(dataTable) {
   //Build Out the Variables to Look For
   const allVariables = {};
 
-  dataTable.forEach(expectation => 
+  dataTable.forEach(expectation =>
     expectation.forEach(cell => {
-      lex(cell, {onMacro: t => {
-        let [name] = t.split('.', 2)
-        name = canonicalize(name)
-        if(name.startsWith('@'))
-          allVariables[name] = true;
-      }})
+      lex(cell, {
+        onMacro: t => {
+          let [name] = t.split('.', 2)
+          name = canonicalize(name)
+          if (name.startsWith('@'))
+            allVariables[name] = true;
+        }
+      })
     })
   )
 
@@ -56,19 +61,21 @@ export function expectationTable(dataTable) {
       const outputRow = [];
       expectation.forEach(cell => {
         const outputCell = []
-        lex(cell, {onText: t => outputCell.push(t), onMacro: t => {
-          let [name, path] = t.split('.', 2)
-          name = canonicalize(name)
-          if(name.startsWith('@')) { // Variable reference
-            const object = lookupTable[name]
-            const substitutedValue = lodashGet(object, path)
-            outputCell.push(substitutedValue)
-          } else { // Constant reference            
-            const object = macroConstants[name.slice(1)]
-            const substitutedValue = lodashGet(object, path)
-            outputCell.push(substitutedValue)
+        lex(cell, {
+          onText: t => outputCell.push(t), onMacro: t => {
+            let [name, path] = t.split('.', 2)
+            name = canonicalize(name)
+            if (name.startsWith('@')) { // Variable reference
+              const object = lookupTable[name]
+              const substitutedValue = lodashGet(object, path)
+              outputCell.push(substitutedValue)
+            } else { // Constant reference            
+              const object = macroConstants[name.slice(1)]
+              const substitutedValue = lodashGet(object, path)
+              outputCell.push(substitutedValue)
+            }
           }
-        }})
+        })
         outputRow.push(outputCell.join(''))
       })
       outputTable.push(outputRow)
@@ -76,4 +83,8 @@ export function expectationTable(dataTable) {
 
     return outputTable;
   })
+}
+
+function expectationText() {
+
 }

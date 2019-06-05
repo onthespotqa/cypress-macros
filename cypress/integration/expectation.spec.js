@@ -62,18 +62,20 @@ describe('expectationTable', () => {
  })
 
  it('returns date formats for today', () => {
+  const now = new Date();
   let dataTable = [
    ["Short", "Long", "Current Year"],
    ["{$today.short}", "{$today.long}", "{$today.year}"]
   ]
   let expected = [
    ["Short", "Long", "Current Year"],
-   [format(new Date(), 'M/D/YY'), format(new Date(), 'MM/DD/YYYY'), format(new Date(), 'YYYY')]
+   [format(now, 'M/D/YY'), format(now, 'MM/DD/YYYY'), format(now, 'YYYY')]
   ]
   expectationTable(dataTable).should('eql', expected)
  })
 
  it('returns a mixture of strings and dates', () => {
+  const now = new Date();
   let dataTable = [
    ["Name", "Weapon", "Power Level", "Rating Date"],
    ["{cap.name}", "{cap.weapon}", "1", "{$today.short}"],
@@ -81,8 +83,8 @@ describe('expectationTable', () => {
   ]
   let expected = [
    ["Name", "Weapon", "Power Level", "Rating Date"],
-   ["Captain America", "Shield", "1", format(new Date(), 'M/D/YY')],
-   ["Iron Man", "Gauntlet", "3", format(new Date(), 'MM/DD/YYYY')]
+   ["Captain America", "Shield", "1", format(now, 'M/D/YY')],
+   ["Iron Man", "Gauntlet", "3", format(now, 'MM/DD/YYYY')]
   ]
   expectationTable(dataTable).should('eql', expected)
  })

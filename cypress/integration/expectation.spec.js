@@ -1,6 +1,7 @@
 /// <reference types="cypress"/>
 const _ = Cypress._
 import { expectationTable } from '../../src/expectation'
+import { format } from 'date-fns';
 
 
 describe('expectationTable', () => {
@@ -8,7 +9,6 @@ describe('expectationTable', () => {
   cy.fixture('thor').as('thor');
   cy.fixture('cap').as('cap');
   cy.fixture('iron').as('iron');
-  cy.fixture('date').as('today');
  });
 
 
@@ -30,7 +30,7 @@ describe('expectationTable', () => {
    ["Name", "Weapon"],
    ["Captain America", "Shield"]
   ]
-  expectationTable(dataTable).should('eql', expected)  
+  expectationTable(dataTable).should('eql', expected)
  });
 
  it('returns multiple rows with macros', () => {
@@ -68,7 +68,7 @@ describe('expectationTable', () => {
   ]
   let expected = [
    ["Short", "Long", "Current Year"],
-   ["6/1/19", "06/01/2019", "2019"]
+   [format(new Date(), 'M/D/YY'), format(new Date(), 'MM/DD/YYYY'), format(new Date(), 'YYYY')]
   ]
   expectationTable(dataTable).should('eql', expected)
  })
@@ -76,13 +76,13 @@ describe('expectationTable', () => {
  it('returns a mixture of strings and dates', () => {
   let dataTable = [
    ["Name", "Weapon", "Power Level", "Rating Date"],
-   ["{cap.name}", "{cap.weapon}", "1", "{today.short}"],
-   ["{iron.name}", "{iron.weapon}", "3", "{today.long}"]
+   ["{cap.name}", "{cap.weapon}", "1", "{$today.short}"],
+   ["{iron.name}", "{iron.weapon}", "3", "{$today.long}"]
   ]
   let expected = [
    ["Name", "Weapon", "Power Level", "Rating Date"],
-   ["Captain America", "Shield", "1", "6/1/19"],
-   ["Iron Man", "Gauntlet", "3", "06/01/2019"]
+   ["Captain America", "Shield", "1", format(new Date(), 'M/D/YY')],
+   ["Iron Man", "Gauntlet", "3", format(new Date(), 'MM/DD/YYYY')]
   ]
   expectationTable(dataTable).should('eql', expected)
  })
@@ -122,7 +122,7 @@ describe('expectationTable', () => {
   ]
   expectationTable(dataTable).should('eql', expected)
  })
- 
 
- 
+
+
 })

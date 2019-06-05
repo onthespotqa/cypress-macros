@@ -1,6 +1,6 @@
 {
   "name": "cypress-plugin-macros",
-  "version": "0.1",
+  "version": "0.0.0",
   "private": true,
   "description": "Cypress plugin that works with gherkin to add macro support",
   "main": "lib/index.js",

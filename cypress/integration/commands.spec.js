@@ -59,5 +59,17 @@ describe("evalMacros", () => {
         ["shield", "repulsor"]
       ]);
     });
+
+    it("works with a cuke datatable", () => {
+      cy.evalMacros([
+        ["Name", "Weapon", "Number"]
+        ["{cap.name}", "{iron.name}", "1"],
+        ["{cap.weapon}", "{iron.weapon}", "2"]
+      ]).should("be", [
+        ["Name", "Weapon", "Number"]
+        ["Captain America", "Iron Man", "1"],
+        ["shield", "repulsor", "2"]
+      ]);
+    });
   });
 });

@@ -1,4 +1,4 @@
-import { canonicalize, lex } from "../../src/expressions";
+import { canonicalize, lex } from "../../src/parser";
 
 describe("canonicalize", () => {
   it("passes @", () => {

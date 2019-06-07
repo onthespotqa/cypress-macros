@@ -1,7 +1,7 @@
 import get from "lodash/get";
 import { Chainable } from ".";
 import { instantiate } from "./globals";
-import { canonicalize, lex } from "./expressions";
+import { canonicalize, lex } from "./parser";
 
 declare var cy: Chainable;
 

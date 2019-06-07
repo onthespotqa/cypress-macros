@@ -1,20 +1,50 @@
 beforeEach(() => {
-  cy.wrap({ name: "Batman", weapon: "fatalism" }).as("bat");
-  cy.wrap({ name: "Captain America", weapon: "shield" }).as("cap");
-  cy.wrap({ name: "Iron Man", weapon: "repulsor" }).as("iron");
+  cy.wrap({
+    name: "Batman",
+    weapon: "fatalism",
+    suit: { color: "black" }
+  }).as("bat");
+  cy.wrap({
+    name: "Captain America",
+    weapon: "shield",
+    suit: { color: "red, white and blue" }
+  }).as("cap");
+  cy.wrap({
+    name: "Iron Man",
+    weapon: "repulsor",
+    suit: { color: "red" }
+  }).as("iron");
 });
 
 describe("evalMacros", () => {
+  context("macro expressions", () => {
+    it("handles macro globals", () => {
+      cy.evalMacros("{$today.year}").should("be", new Date().getFullYear());
+    });
+
+    it("handles cypress variables", () => {
+      cy.evalMacros("{@bat.name}").should("be", "Batman");
+    });
+
+    it("handles implicit cypress variables", () => {
+      cy.evalMacros("{iron.name}").should("be", "Iron Man");
+    });
+
+    it("handles compound get", () => {
+      cy.evalMacros("{bat.suit.color}").should("be", "black");
+    });
+  });
+
   context("input types", () => {
     it("works with strings", () => {
       cy.evalMacros("{bat.weapon} vs {iron.weapon}?").should(
-        "eql",
+        "be",
         "fatalism vs repulsor?"
       );
     });
 
     it("works with lists", () => {
-      cy.evalMacros(["{cap.name}", "{iron.name}"]).should("eql", [
+      cy.evalMacros(["{cap.name}", "{iron.name}"]).should("be", [
         "Captain America",
         "Iron Man"
       ]);
@@ -24,7 +54,7 @@ describe("evalMacros", () => {
       cy.evalMacros([
         ["{cap.name}", "{iron.name}"],
         ["{cap.weapon}", "{iron.weapon}"]
-      ]).should("eql", [
+      ]).should("be", [
         ["Captain America", "Iron Man"],
         ["shield", "repulsor"]
       ]);

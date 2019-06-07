@@ -1,6 +1,6 @@
 import get from "lodash/get";
 import { Chainable } from ".";
-import { instantiate } from "./constants";
+import { instantiate } from "./globals";
 import { canonicalize, lex } from "./expressions";
 
 declare var cy: Chainable;
@@ -50,18 +50,18 @@ function findMacros(input: Evaluatable, macros: string[]) {
 function replaceMacros(
   input: Evaluatable,
   dict: Dictionary,
-  constants: any
+  globals: any
 ): any {
   if (isSequence(input)) {
-    return input.map(elem => replaceMacros(elem, dict, constants));
+    return input.map(elem => replaceMacros(elem, dict, globals));
   } else if (typeof input === "string") {
     const fragments = new Array<string>();
     lex(input, {
       onMacro: (expr: string) => {
-        const [prefix, path] = expr.split(".", 2);
+        const [prefix, ...path] = expr.split(".");
         const name = canonicalize(prefix);
         const value = name.startsWith("$")
-          ? get(constants, name.slice(1))
+          ? get(globals, name.slice(1))
           : dict[name];
         fragments.push(get(value, path));
       },

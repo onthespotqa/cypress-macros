@@ -55,7 +55,8 @@
   },
   "include": [
     "../../node_modules/cypress",
-    "cypress/*/*.ts"
+    "cypress/**/*.ts",
+    "src/**/*.ts"
   ],
   "exclude": [
     "**/__tests__/**/*"

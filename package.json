@@ -1,6 +1,6 @@
 {
   "name": "cypress-macros",
-  "version": "0.1.0",
+  "version": "0.1.2",
   "description": "Cypress commands to interpolate aliases & their properties into strings and arrays. Pairs well with cucumber-js.",
   "main": "lib/index.js",
   "scripts": {
@@ -24,6 +24,9 @@
     "type": "git",
     "url": "https://github.com/onthespotqa/cypress-macros"
   },
+  "files": [
+    "lib"
+  ],
   "author": "Hillary Hueter",
   "license": "MIT",
   "devDependencies": {

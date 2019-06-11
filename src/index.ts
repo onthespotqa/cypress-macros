@@ -1,7 +1,5 @@
 import * as commands from "./commands";
 
-declare var Cypress: any;
-
 /**
  * Label/title parameter accepted by all finders.
  */
@@ -21,6 +19,4 @@ export interface Chainable {
   wrap(f0: Callback): Chainable;
 }
 
-export default function install() {
-  Cypress.Commands.add("evalMacros", commands.evalMacros);
-}
+export { commands };

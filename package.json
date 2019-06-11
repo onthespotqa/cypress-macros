@@ -1,9 +1,9 @@
 {
   "name": "cypress-macros",
   "version": "0.9.0",
-  "private": true,
   "description": "Cypress commands to interpolate aliases & their properties into strings and arrays. Pairs well with cucumber-js.",
   "main": "lib/index.js",
+  "files": ["lib"],
   "scripts": {
     "build": "yarn clean:build && yarn build:types && yarn build:js",
     "build:types": "tsc --emitDeclarationOnly",

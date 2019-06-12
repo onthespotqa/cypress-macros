@@ -23,7 +23,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/onthespotqa/cypress-plugin-macros"
+    "url": "https://github.com/onthespotqa/cypress-macros"
   },
   "author": "Hillary Hueter",
   "license": "MIT",

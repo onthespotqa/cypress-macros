@@ -1,3 +1,5 @@
+[![CircleCI](https://circleci.com/gh/onthespotqa/cypress-macros.svg?style=svg)](https://circleci.com/gh/onthespotqa/cypress-macros)
+
 What Is This?
 =============
 

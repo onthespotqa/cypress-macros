@@ -1,7 +1,6 @@
 [![CircleCI](https://circleci.com/gh/onthespotqa/cypress-macros.svg?style=svg)](https://circleci.com/gh/onthespotqa/cypress-macros)
 
-What Is This?
-=============
+# What Is This?
 
 This package contains a Cypress command called `evalMacros` that makes it
 easier to write tests for web applications whose test data is generated
@@ -14,8 +13,7 @@ check for a greeting:
 cy.evalMacros('Hello, {user.firstName}').then(greeting => cy.contains('.header div', greeting))
 ```
 
-Setup
------
+## Setup
 
 Just import the commands module and add `evalMacros` as a custom command.
 
@@ -28,13 +26,11 @@ Cypress.Commands.add('evalMacros', { prevSubject: false }, commands.evalMacros);
 You can rename it to something different if desired, or even overwrite the
 `contains` built-in command so that it automatically interpolates.
 
-Custom Cypress Cucumber Parameter 
------
+## Custom Cypress Cucumber Parameter
 
-You can define a custom cypress-cucumber parameter that allows you to use a macro as a placeholder in a step definition by placing the following code in your support or step_definitions directory. 
+You can define a custom cypress-cucumber parameter that allows you to use a macro as a placeholder in a step definition by placing the following code in your support or step_definitions directory.
 
-
-In a file named _setup.js place the following code: 
+In a file named \_setup.js place the following code:
 
 ```
 function canonicalize(name) {
@@ -59,3 +55,5 @@ defineParameterType({
  }
 })
 ```
+
+Does circleci build/

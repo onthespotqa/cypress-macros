@@ -31,4 +31,8 @@ jobs:
           key: v1-dependencies-{{ checksum "package.json" }}
 
       # run tests!
-      - run: yarn test
+      - run:
+        name: Running Tests
+        command: yarn test
+      -store_test_results: 
+        path: cypres/results  

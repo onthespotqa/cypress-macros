@@ -1,5 +1,6 @@
 cypress/videos
 cypress/screenshots
+cypress/results
 dist
 lib
 node_modules

@@ -49,9 +49,6 @@ describe("lex", () => {
     expect(all("foo  {bar}")).to.eql(["foo  ", "{bar}"]);
     expect(all("foo{bar} ")).to.eql(["foo", "{bar}", " "]);
     expect(all("   foo {bar}baz   ")).to.eql(["   foo ", "{bar}", "baz   "]);
-  });
-
-  it("does multiples", () => {
     expect(all("{foo} bar {baz}")).to.eql(["{foo}", " bar ", "{baz}"]);
     expect(all("{foo}{bar}{baz}")).to.eql(["{foo}", "{bar}", "{baz}"]);
     expect(all("{foo} {bar} {baz}")).to.eql([
@@ -76,5 +73,6 @@ describe("lex", () => {
     expect(all("quux}")).to.eql(["quux}"]);
     expect(all("foo{bar")).to.eql(["foo", "{bar}"]);
     expect(all("{foo")).to.eql(["{foo}"]);
+    expect(all("{{quux")).to.eql(["{{quux}"]);
   });
 });

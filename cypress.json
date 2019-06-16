@@ -1,4 +1,8 @@
 {
   "video": false,
-  "screenshots": true
+  "screenshots": true,
+  "reporter": "junit",
+  "reporterOptions": {
+    "mochaFile": "cypress/results/result-[hash].xml"
+  }
 }

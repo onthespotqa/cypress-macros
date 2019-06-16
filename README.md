@@ -1,5 +1,6 @@
-Cypress Macros
-==============
+# What Is This?
+
+[![CircleCI](https://circleci.com/gh/onthespotqa/cypress-macros.svg?style=svg)](https://circleci.com/gh/onthespotqa/cypress-macros)
 
 This package contains a Cypress command called `evalMacros` that makes it
 easier to write tests for web applications whose test data is generated
@@ -45,8 +46,7 @@ The default behavior is to instantiate them the first time `evalMacros`
 is called and never to reset them, which makes them act more like
 constants than variables.
 
-Setup
------
+## Setup
 
 ### Add Custom Command
 
@@ -86,3 +86,34 @@ variables.add("$today", () => {
 ```
 
 Don't forget to `import "./variables"` in `cypress/support/index.js`!
+
+## Cucumber Parameter Type
+
+If you are using [cypress-cucumber-preprocessor](https://www.npmjs.com/package/cypress-cucumber-preprocessor),
+you can define a custom parameter type that allows you to use a macro as a
+placeholder in a step definition.
+
+In a step definition file named `_setup.js` (so it runs first), place the
+following code:
+
+```
+import {canonicalize} from 'cypress-macros/parser'
+
+defineParameterType({
+ name: "macro",
+ regexp: /\({.*)\})/,
+ transformer: s => canonicalize(s) 
+})
+```
+
+Because macros are evaluated asynchronously, you will still need to evaluate
+the macro in each step definition where it is used by calling `evalMacros`
+on your step parameters, but the use of curly braces allows for some nice
+syntactic sugar in your Cucumber features:
+
+```
+When I click the link {@user.nickname}
+```
+
+This avoids the excessive puncutation that would result if you used a `{string}`
+to capture macro expressions (`When I do "{@foo}"`).

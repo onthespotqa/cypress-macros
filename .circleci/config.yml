@@ -1,0 +1,37 @@
+# Javascript Node CircleCI 2.0 configuration file
+#
+# Check https://circleci.com/docs/2.0/language-javascript/ for more details
+#
+version: 2
+jobs:
+  build:
+    docker:
+      - image: cypress/base:8
+        environment:
+          ## this enables colors in the output
+          TERM: xterm
+
+    working_directory: ~/cypress-macros
+
+    steps:
+      - checkout
+
+      # Download and cache dependencies
+      - restore_cache:
+          keys:
+            - v2-deps-{{ .Branch }}-{{ checksum "yarn.lock" }}
+            - v2-deps-{{ .Branch }}-
+            - v2-deps-
+
+      - run: yarn install --frozen-lockfile
+      - save_cache:
+          key: v2-deps-{{ .Branch }}-{{ checksum "yarn.lock" }}
+          paths:
+            - ~/.cache
+
+      # run tests!
+      - run:
+          name: Running Tests
+          command: yarn test
+      - store_test_results:
+          path: cypress/results

@@ -101,7 +101,7 @@ import {canonicalize} from 'cypress-macros/parser'
 
 defineParameterType({
  name: "macro",
- regexp: /\({.*)\})/,
+ regexp: /\{(.*)\}/,
  transformer: s => canonicalize(s) 
 })
 ```

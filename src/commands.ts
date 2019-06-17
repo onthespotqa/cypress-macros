@@ -1,14 +1,9 @@
 import get from "lodash/get";
-import { Chainable } from ".";
-import { instantiate } from "./globals";
+import { Chainable, Dictionary } from ".";
 import { canonicalize, lex } from "./parser";
+import { instantiate } from "./variables";
 
 declare var cy: Chainable;
-
-/**
- * A lookup table that maps Cypress variables to their values.
- */
-export type Dictionary = Record<string, any>;
 
 /**
  * Anything that can be evaluated by evalMacros.
@@ -24,7 +19,7 @@ function isSequence(input: Evaluatable): input is string[] {
 
 /**
  * Recursively lex all strings in an Evaluatable, adding every distinct macro
- * expression encountered to a map of string-to-boolean.. The expressions are
+ * expression encountered to a map of string-to-boolean. The expressions are
  * not canonicalized, manipulated or deduplicated; they appear in the same
  * order as in the input.
  */
@@ -37,7 +32,7 @@ function findMacros(input: Evaluatable, macros: string[]) {
     });
   } else {
     throw new Error(
-      `cypress-macros: cannot find macros in a(n) '${typeof input}'`
+      `cypress-macros: cannot findMacros in a(n) '${typeof input}'`
     );
   }
 
@@ -45,15 +40,16 @@ function findMacros(input: Evaluatable, macros: string[]) {
 }
 
 /**
- * Recursively
+ * Given a dictionary of Cypress variables and another of macro variables,
+ * replace all macro expressions with their evaluated value.
  */
 function replaceMacros(
   input: Evaluatable,
-  dict: Dictionary,
-  globals: any
+  cvars: Dictionary,
+  mvars: Dictionary
 ): any {
   if (isSequence(input)) {
-    return input.map(elem => replaceMacros(elem, dict, globals));
+    return input.map(elem => replaceMacros(elem, cvars, mvars));
   } else if (typeof input === "string") {
     const fragments = new Array<string>();
     lex(input, {
@@ -61,8 +57,8 @@ function replaceMacros(
         const [prefix, ...path] = expr.split(".");
         const name = canonicalize(prefix);
         const value = name.startsWith("$")
-          ? get(globals, name.slice(1))
-          : dict[name];
+          ? get(mvars, name.slice(1))
+          : cvars[name];
         fragments.push(get(value, path));
       },
       onText: (text: string) => fragments.push(text)
@@ -70,7 +66,7 @@ function replaceMacros(
     return fragments.join("");
   }
   throw new Error(
-    `cypress-macros: cannot find macros in a(n) '${typeof input}'`
+    `cypress-macros: cannot findMacros in a(n) '${typeof input}'`
   );
 }
 
@@ -107,9 +103,10 @@ export function evalMacros(input: Evaluatable): Chainable {
     prefixes[prefix] = true;
   });
 
-  const varNames = Object.keys(prefixes).filter(k => k.startsWith("@"));
+  const cvarNames = Object.keys(prefixes).filter(k => k.startsWith("@"));
 
-  return getAll(varNames).then((dict: Dictionary) => {
-    return replaceMacros(input, dict, instantiate());
+  return getAll(cvarNames).then((cvars: Dictionary) => {
+    const mvars = instantiate();
+    return replaceMacros(input, cvars, mvars);
   });
 }

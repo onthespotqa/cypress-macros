@@ -20,31 +20,31 @@ describe("commands", () => {
   describe("evalMacros", () => {
     context("macro expressions", () => {
       it("replaces macro variables", () => {
-        cy.evalMacros("{$today.year}").should("be", new Date().getFullYear());
-        cy.evalMacros("{$villains.major.0}").should("be", "Faustus");
+        cy.evalMacros("{$today.year}").should("eq", new Date().getFullYear().toString());
+        cy.evalMacros("{$villains.major.0}").should("eq", "Faustus");
       });
 
       it("replaces cypress variables", () => {
-        cy.evalMacros("{@bat.name}").should("be", "Batman");
-        cy.evalMacros("{@bat.suit.color}").should("be", "black");
+        cy.evalMacros("{@bat.name}").should("eq", "Batman");
+        cy.evalMacros("{@bat.suit.color}").should("eq", "black");
       });
 
       it("replaces implicit cypress variables", () => {
-        cy.evalMacros("{iron.name}").should("be", "Iron Man");
-        cy.evalMacros("{iron.suit.color}").should("be", "red");
+        cy.evalMacros("{iron.name}").should("eq", "Iron Man");
+        cy.evalMacros("{iron.suit.color}").should("eq", "red");
       });
     });
 
     context("parameters", () => {
       it("accepts strings", () => {
         cy.evalMacros("{bat.weapon} vs {iron.weapon}?").should(
-          "be",
+          "eql",
           "fatalism vs repulsor?"
         );
       });
 
       it("accepts lists", () => {
-        cy.evalMacros(["{cap.name}", "vs.", "{iron.name}"]).should("be", [
+        cy.evalMacros(["{cap.name}", "vs.", "{iron.name}"]).should("eql", [
           "Captain America",
           "vs.",
           "Iron Man"
@@ -56,7 +56,7 @@ describe("commands", () => {
           ["Name", "Weapon", "Number"],
           ["{cap.name}", "{iron.name}", "1"],
           ["{cap.weapon}", "{iron.weapon}", "2"]
-        ]).should("be", [
+        ]).should("eql", [
           ["Name", "Weapon", "Number"],
           ["Captain America", "Iron Man", "1"],
           ["shield", "repulsor", "2"]

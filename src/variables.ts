@@ -15,6 +15,7 @@ export function add(name: string, factory: Factory) {
       `cypress-macros: variable name '${name}' must begin with a $`
     );
   registry[name] = factory;
+  console.log('add', name)
 }
 
 let instance: Dictionary = {};
@@ -31,6 +32,7 @@ export function instantiate(): Dictionary {
       ([name, factory]) => (instance[name] = factory())
     );
     instantiated = true;
+    console.log('instantiate', instance)
   }
 
   return instance;
@@ -39,4 +41,5 @@ export function instantiate(): Dictionary {
 export function reset() {
   instance = {};
   instantiated = false;
+  console.log('reset', instance)
 }

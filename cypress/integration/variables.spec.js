@@ -9,11 +9,12 @@ describe("macro variables", () => {
     });
 
     it("allows replacement", () => {
+      variables.reset();
       variables.add("$replaced", () => false);
-      cy.evalMacros("{$replaced}").should("be", "false");
+      cy.evalMacros("{$replaced}").should("eq", "false");
       variables.add("$replaced", () => true);
       variables.reset();
-      cy.evalMacros("{$replaced}").should("be", "true");
+      cy.evalMacros("{$replaced}").should("eq", "true");
     });
   });
 
@@ -22,10 +23,10 @@ describe("macro variables", () => {
     variables.add("$counter", () => telltale);
 
     it("works", () => {
-      cy.evalMacros("{$telltale}").should("be", "foo");
+      cy.evalMacros("{$telltale}").should("eq", "foo");
       variables.reset();
       telltale = "bar";
-      cy.evalMacros("{$telltale}").should("be", "bar");
+      cy.evalMacros("{$telltale}").should("eq", "bar");
     });
   });
 });

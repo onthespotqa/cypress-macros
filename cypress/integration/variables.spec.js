@@ -9,23 +9,31 @@ describe("macro variables", () => {
     });
 
     it("allows replacement", () => {
-      variables.add("$replaced", () => false);
-      cy.evalMacros("{$replaced}").should("be", "false");
-      variables.add("$replaced", () => true);
-      variables.reset();
-      cy.evalMacros("{$replaced}").should("be", "true");
+      cy.wrap(null).then(() => {
+        variables.reset();
+        variables.add("$replaced", () => false);
+      });
+      cy.evalMacros("{$replaced}").should("eq", "false");
+
+      cy.wrap(null).then(() => {
+        variables.reset();
+        variables.add("$replaced", () => true);
+      });
+      cy.evalMacros("{$replaced}").should("eq", "true");
     });
   });
 
   describe("reset", () => {
     let telltale = "foo";
-    variables.add("$counter", () => telltale);
+    variables.add("$telltale", () => telltale);
 
     it("works", () => {
-      cy.evalMacros("{$telltale}").should("be", "foo");
-      variables.reset();
-      telltale = "bar";
-      cy.evalMacros("{$telltale}").should("be", "bar");
+      cy.evalMacros("{$telltale}").should("eq", "foo");
+      cy.wrap(null).then(() => {
+        variables.reset();
+        telltale = "bar";
+      });
+      cy.evalMacros("{$telltale}").should("eq", "bar");
     });
   });
 });

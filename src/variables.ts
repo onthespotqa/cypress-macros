@@ -2,7 +2,19 @@ import { Dictionary } from ".";
 
 type Factory = () => any;
 
-const registry: Record<string, Factory> = {};
+interface State {
+  registry: Record<string, Factory>;
+  instance: Dictionary;
+  instantiated: boolean;
+}
+
+declare var Cypress: { _macroVariables: State };
+if (!Cypress._macroVariables)
+  Cypress._macroVariables = {
+    registry: {},
+    instance: {},
+    instantiated: false
+  };
 
 /**
  * Add (or replace) a macro variable definition. Name must omit
@@ -14,12 +26,9 @@ export function add(name: string, factory: Factory) {
     throw new Error(
       `cypress-macros: variable name '${name}' must begin with a $`
     );
-  registry[name] = factory;
-  console.log('add', name)
+  Cypress._macroVariables.registry[name] = factory;
 }
 
-let instance: Dictionary = {};
-let instantiated = false;
 /**
  * Instantiate a Dictionary containing all defined variables. If
  * variables were already instantiated since the beginning of the
@@ -27,19 +36,17 @@ let instantiated = false;
  * the variables.
  */
 export function instantiate(): Dictionary {
-  if (!instantiated) {
-    Object.entries(registry).forEach(
-      ([name, factory]) => (instance[name] = factory())
+  if (!Cypress._macroVariables.instantiated) {
+    Object.entries(Cypress._macroVariables.registry).forEach(
+      ([name, factory]) => (Cypress._macroVariables.instance[name] = factory())
     );
-    instantiated = true;
-    console.log('instantiate', instance)
+    Cypress._macroVariables.instantiated = true;
   }
 
-  return instance;
+  return Cypress._macroVariables.instance;
 }
 
 export function reset() {
-  instance = {};
-  instantiated = false;
-  console.log('reset', instance)
+  Cypress._macroVariables.instance = {};
+  Cypress._macroVariables.instantiated = false;
 }

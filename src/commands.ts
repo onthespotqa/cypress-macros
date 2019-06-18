@@ -17,7 +17,6 @@ function isSequence(input: Evaluatable): input is string[] {
   return Array.isArray(input);
 }
 
-
 /**
  * Recursively lex all strings in an Evaluatable, adding every distinct macro
  * expression encountered to a map of string-to-boolean. The expressions are
@@ -57,11 +56,9 @@ function replaceMacros(
       onMacro: (expr: string) => {
         const [prefix, ...path] = expr.split(".");
         const name = canonicalize(prefix);
-        console.log(mvars)
-        const value = name.startsWith("$")
-          ? get(mvars, name)
-          : cvars[name];
-        fragments.push(get(value, path));
+        let value = name.startsWith("$") ? mvars[name] : cvars[name];
+        if (path.length > 0) value = get(value, path);
+        fragments.push(value);
       },
       onText: (text: string) => fragments.push(text)
     });

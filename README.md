@@ -56,6 +56,8 @@ In `cypress/support/commands.js`,  add `evalMacros` as a custom command:
 import { commands } from 'cypress-macros';
 
 Cypress.Commands.add('evalMacros', { prevSubject: false }, commands.evalMacros);
+Cypress.Commands.add('getAllByName', { prevSubject: false }, commands.getAllByName);
+
 ```
 
 You can rename the custom command to something different if desired, or even

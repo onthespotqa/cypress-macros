@@ -20,7 +20,10 @@ describe("commands", () => {
   describe("evalMacros", () => {
     context("macro expressions", () => {
       it("replaces macro variables", () => {
-        cy.evalMacros("{$today.year}").should("eq", new Date().getFullYear().toString());
+        cy.evalMacros("{$today.year}").should(
+          "eq",
+          new Date().getFullYear().toString()
+        );
         cy.evalMacros("{$villains.major.0}").should("eq", "Faustus");
       });
 
@@ -61,6 +64,19 @@ describe("commands", () => {
           ["Captain America", "Iron Man", "1"],
           ["shield", "repulsor", "2"]
         ]);
+      });
+    });
+  });
+
+  describe("getAllByName", () => {
+    it("works", () => {
+      cy.getAllByName(["@cap", "@bat", "@iron"]).then(result => {
+        expect(result).to.have.property("@cap");
+        expect(result).to.have.property("@bat");
+        expect(result).to.have.property("@iron");
+        expect(result["@cap"].name).to.eq("Captain America");
+        expect(result["@bat"].name).to.eq("Batman");
+        expect(result["@iron"].name).to.eq("Iron Man");
       });
     });
   });

@@ -10,7 +10,7 @@ type CommandCallback = (subject: any) => any;
  * Subset of the Cypress chainable interface used by this package.
  */
 export interface Chainable {
-  get(s0: string): Chainable;
+  get(s0: string, options?: any): Chainable;
   then(f0: CommandCallback): Chainable;
   wrap(f0: CommandCallback): Chainable;
 }

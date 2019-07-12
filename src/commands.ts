@@ -75,11 +75,13 @@ function replaceMacros(
  * more than once, it will be gotten multiple times (which is probably
  * useless).
  */
-function getAll(names: string[]): Chainable {
+export function getAllByName(names: string[]): Chainable {
   let chain = cy;
   const values = {};
   names.forEach(name => {
-    chain = chain = chain.get(name).then(value => (values[name] = value));
+    chain = chain
+      .get(name, { log: false })
+      .then(value => (values[name] = value));
   });
   return chain.then(() => values);
 }
@@ -104,7 +106,7 @@ export function evalMacros(input: Evaluatable): Chainable {
 
   const cvarNames = Object.keys(prefixes).filter(k => k.startsWith("@"));
 
-  return getAll(cvarNames).then((cvars: Dictionary) => {
+  return getAllByName(cvarNames).then((cvars: Dictionary) => {
     const mvars = instantiate();
     return replaceMacros(input, cvars, mvars);
   });

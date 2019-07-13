@@ -66,6 +66,21 @@ describe("commands", () => {
         ]);
       });
     });
+
+    context("options.force", () => {
+      it("disregards {}", () => {
+        cy.evalMacros("bat.name", { force: true }).should("eql", "Batman");
+
+        cy.evalMacros("{bat.name}", { force: true }).should("eql", "Batman");
+      });
+
+      it("works with lists", () => {
+        cy.evalMacros(["bat.name", "{cap.name}"], { force: true }).should(
+          "eql",
+          ["Batman", "Captain America"]
+        );
+      });
+    });
   });
 
   describe("getAllByName", () => {

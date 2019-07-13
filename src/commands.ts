@@ -23,6 +23,13 @@ interface EvalOptions {
    * braces are still tolerated).
    */
   force?: boolean;
+  /**
+   * If true, strings consisting entirely of a macro expression
+   * (including bare strings, with force:true) are not converted
+   * to strings during evaluation; rather, they are replaced
+   * by the bare JavaScript object resulting from the evaluation.
+   */
+  raw?: boolean;
 }
 
 /**
@@ -71,15 +78,18 @@ function findMacros(
 /**
  * Given a dictionary of Cypress variables and another of macro variables,
  * replace all macro expressions with their evaluated value.
+ *
+ * @todo convert this function into an instantiable class to remove constants (cvars/mvars/force/raw) from call interface
  */
 function replaceMacros(
   input: Evaluatable,
   cvars: Dictionary,
   mvars: Dictionary,
-  force: boolean
+  force: boolean,
+  raw: boolean
 ): any {
   if (isSequence(input)) {
-    return input.map(elem => replaceMacros(elem, cvars, mvars, force));
+    return input.map(elem => replaceMacros(elem, cvars, mvars, force, raw));
   } else if (typeof input === "string") {
     const fragments = new Array<string>();
 
@@ -98,6 +108,7 @@ function replaceMacros(
         onText: (text: string) => fragments.push(text)
       });
 
+    if (raw && fragments.length === 1) return fragments[0];
     return fragments.join("");
   }
   throw new Error(
@@ -110,6 +121,11 @@ function replaceMacros(
  * each name to its value. The list is non deduplicated; if a name appears
  * more than once, it will be gotten multiple times (which is probably
  * useless).
+ *
+ * This method is error prone and cannot deal with macro variables, compound
+ * expressions and numerous other cases; it will be removed. Please use
+ * `evalMacros()` with `{force:true, raw:true}` as a replacement for this
+ * command.
  *
  * @deprecated will be removed in 2.0
  */
@@ -132,12 +148,23 @@ export function getAllByName(names: string[]): Chainable {
  * (e.g. string[], string[][], and so forth).
  *
  * @see EvalOptions for information on options.
+ *
+ * @example interpolate macros into a string
+ *   cy.evalMacros('Hello, {user.name}') # => 'Hello, Alice'
+ *
+ * @example evaluate whole macro expressions as strings
+ *   cy.evalMacros(['user.name', 'user.age'], {force:true}) # => ['Alice', '12']
+ *
+ * @example evaluate whole expressions as JavaScript values
+ *   cy.evalMacros(['user.name', 'user.age'], {force:true, raw:true}) # => ['Alice', 12]
  */
 export function evalMacros(
   input: Evaluatable,
   options: EvalOptions = {}
 ): Chainable {
   const force = options.force || false;
+  const raw = options.raw || false;
+
   const macros = new Array<string>();
   findMacros(input, macros, force);
 
@@ -152,6 +179,6 @@ export function evalMacros(
 
   return getAllByName(cvarNames).then((cvars: Dictionary) => {
     const mvars = instantiate();
-    return replaceMacros(input, cvars, mvars, force);
+    return replaceMacros(input, cvars, mvars, force, raw);
   });
 }

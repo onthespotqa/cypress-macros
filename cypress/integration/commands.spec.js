@@ -2,17 +2,20 @@ beforeEach(() => {
   cy.wrap({
     name: "Batman",
     weapon: "fatalism",
-    suit: { color: "black" }
+    suit: { color: "black" },
+    birthday: new Date(Date.parse("1939-09-19"))
   }).as("bat");
   cy.wrap({
     name: "Captain America",
     weapon: "shield",
-    suit: { color: "red, white and blue" }
+    suit: { color: "red, white and blue" },
+    birthday: new Date(Date.parse("1920-07-04"))
   }).as("cap");
   cy.wrap({
     name: "Iron Man",
     weapon: "repulsor",
-    suit: { color: "red" }
+    suit: { color: "red" },
+    birthday: new Date(Date.parse("1970-05-29"))
   }).as("iron");
 });
 
@@ -64,6 +67,44 @@ describe("commands", () => {
           ["Captain America", "Iron Man", "1"],
           ["shield", "repulsor", "2"]
         ]);
+      });
+    });
+
+    context("options.force", () => {
+      it("disregards {}", () => {
+        cy.evalMacros("bat.name", { force: true }).should("eql", "Batman");
+
+        cy.evalMacros("{bat.name}", { force: true }).should("eql", "Batman");
+      });
+
+      it("works with lists", () => {
+        cy.evalMacros(["bat.name", "{cap.name}"], { force: true }).should(
+          "eql",
+          ["Batman", "Captain America"]
+        );
+      });
+    });
+
+    context("options.raw", () => {
+      it("does not stringify expressions", () => {
+        cy.evalMacros("bat.birthday", { force: true, raw: true }).should(
+          "be.an.instanceof",
+          Date
+        );
+
+        cy.evalMacros("{bat.birthday}", { force: true, raw: true }).should(
+          "be.an.instanceof",
+          Date
+        );
+      });
+
+      it("works with force:true", () => {
+        cy.evalMacros(["bat.birthday", "cap.birthday", "iron.birthday"], {
+          force: true,
+          raw: true
+        }).then(values =>
+          values.forEach(value => expect(value).to.be.instanceof(Date))
+        );
       });
     });
   });

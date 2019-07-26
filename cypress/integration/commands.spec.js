@@ -39,6 +39,19 @@ describe("commands", () => {
         cy.evalMacros("{iron.name}").should("eq", "Iron Man");
         cy.evalMacros("{iron.suit.color}").should("eq", "red");
       });
+      3;
+    });
+
+    context("non-macro expressions", () => {
+      it("ignores null", () => {
+        cy.evalMacros(null).should("eql", null);
+        cy.evalMacros([null]).should("eql", [null]);
+      });
+
+      it("ignores undefined", () => {
+        cy.evalMacros(undefined).should("eql", undefined);
+        cy.evalMacros([undefined]).should("eql", [undefined]);
+      });
     });
 
     context("parameters", () => {

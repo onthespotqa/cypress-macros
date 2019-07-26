@@ -66,9 +66,9 @@ function findMacros(
     lex(input, {
       onMacro: (expr: string) => macros.push(expr)
     });
-  } else {
+  } else if (input !== null && input !== undefined) {
     throw new Error(
-      `cypress-macros: cannot findMacros in a(n) '${typeof input}'`
+      `cypress-macros: cannot evalMacros in a(n) '${typeof input}'`
     );
   }
 
@@ -110,9 +110,9 @@ function replaceMacros(
 
     if (raw && fragments.length === 1) return fragments[0];
     return fragments.join("");
-  }
+  } else if (input === null || input === undefined) return input;
   throw new Error(
-    `cypress-macros: cannot findMacros in a(n) '${typeof input}'`
+    `cypress-macros: cannot evalMacros in a(n) '${typeof input}'`
   );
 }
 
@@ -162,6 +162,11 @@ export function evalMacros(
   input: Evaluatable,
   options: EvalOptions = {}
 ): Chainable {
+  // defeat cypress chain semantics (which preserve the previous
+  // subject if the current command returns undefined) in order
+  // to let us pass through "bare" undefined as undefined.
+  if (input === undefined) return cy.wrap(undefined as any);
+
   const force = options.force || false;
   const raw = options.raw || false;
 

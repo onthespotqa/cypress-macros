@@ -12,7 +12,7 @@ type CommandCallback = (subject: any) => any;
 export interface Chainable {
   get(s0: string, options?: any): Chainable;
   then(f0: CommandCallback): Chainable;
-  wrap(f0: CommandCallback): Chainable;
+  wrap(f0: any): Chainable;
 }
 
 /**

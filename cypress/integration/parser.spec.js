@@ -15,54 +15,62 @@ describe("canonicalize", () => {
 });
 
 describe("findMacroBoundaries", () => {
+  function expectBoundariesToContain(str, matches) {
+    const boundaries = findMacroBoundaries(str);
+
+    expect(boundaries.length).to.eql(matches.length);
+
+    boundaries.map(([startIndex, endIndex], i) => {
+      // + 1 because we dont care about the opening curly brace
+      expect(str.slice(startIndex + 1, endIndex)).to.eql(matches[i]);
+    });
+  }
+
   it("detects simple macros", () => {
-    expect(findMacroBoundaries("hello {world}")).to.eql([[6, 12]]);
+    expectBoundariesToContain("hello {world}", ["world"]);
   });
 
   it("detects multiple macros", () => {
-    expect(findMacroBoundaries("{hello} {world}")).to.eql([[0, 6], [8, 14]]);
+    expectBoundariesToContain("{hello} {world}", ["hello", "world"]);
   });
 
   it("detects macros with dots", () => {
-    expect(findMacroBoundaries("hello {world.city}")).to.eql([[6, 17]]);
+    expectBoundariesToContain("hello {world.city}", ["world.city"]);
   });
 
   it("detects macros with leading and trailing spaces", () => {
-    expect(findMacroBoundaries("hello {  world }")).to.eql([[6, 15]]);
+    expectBoundariesToContain("hello {  world }", ["  world "]);
   });
 
   it("ignores macros with internal spaces", () => {
-    expect(findMacroBoundaries("hello {wo rld}")).to.eql([]);
+    expectBoundariesToContain("hello {wo rld}", []);
   });
 
   it("handles text which is only a macro", () => {
-    expect(findMacroBoundaries("{world}")).to.eql([[0, 6]]);
+    expectBoundariesToContain("{world}", ["world"]);
   });
 
   it("handles text with no macros", () => {
-    expect(findMacroBoundaries("hello world")).to.eql([]);
+    expectBoundariesToContain("hello world", []);
   });
 
   it("handles unmatched open braces", () => {
-    expect(findMacroBoundaries("hello {world")).to.eql([]);
+    expectBoundariesToContain("hello {world", []);
   });
 
   it("handles unmatched close braces", () => {
-    expect(findMacroBoundaries("hello world}")).to.eql([]);
+    expectBoundariesToContain("hello world}", []);
   });
 
   it("ignores empty brace pairs", () => {
-    expect(findMacroBoundaries("hello {}")).to.eql([]);
-  });
-
-  it("ignores empty brace pairs", () => {
-    expect(findMacroBoundaries("hello {}")).to.eql([]);
+    expectBoundariesToContain("hello {}", []);
   });
 
   it("handles complex json structures", () => {
-    expect(
-      findMacroBoundaries("{ a: { c: { d: {hello} } }, b: {world} }")
-    ).to.eql([[15, 21], [31, 37]]);
+    expectBoundariesToContain("{ a: { c: { d: {hello} } }, b: {world} }", [
+      "hello",
+      "world"
+    ]);
   });
 });
 

@@ -24,20 +24,8 @@ export interface LexOptions {
  * Returns an array of pairs of integers, where each pair contains the index
  * of the open curly brace, then the index of the close curly brace. The pairs
  * are sorted in the order they appear in the input string.
- * 
- * e.g.
- * - findMacroBoundaries('hello {FUND1}') = [[6, 12]]
- * - findMacroBoundaries('{FUND1} {FUND2}') = [[0, 6],[8, 14]] // detects multiple macros
- * - findMacroBoundaries('hello {FUND1.id}') = [[6, 15]] // detects with dots
- * - findMacroBoundaries('hello {  FUND1 }') = [[6, 15]] // detects with leading/trailing whitespace
- * - findMacroBoundaries('hello {FUND 1}') = [] // ignores due to internal space
- * - findMacroBoundaries('hello FUND1') = []
- * - findMacroBoundaries('hello {FUND1') = []
- * - findMacroBoundaries('hello FUND1}') = []
- * - findMacroBoundaries('hello {}') = [] // ignores empty pairs
- * - findMacroBoundaries('{ a: { c: { d: {FUND1} } }, b: {FUND2} }') = [[15, 21], [31, 37]]
  */
-function findMacroBoundaries(str: string): [number, number][] {
+export function findMacroBoundaries(str: string): [number, number][] {
   const boundaries: [number, number][] = [];
   const stack: number[] = [];
   let innermostPair = false;

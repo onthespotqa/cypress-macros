@@ -1,9 +1,12 @@
+/// <reference types="cypress" />
+
 import get from "lodash/get";
-import { Chainable, Dictionary } from ".";
+
+import { Dictionary } from ".";
 import { canonicalize, lex } from "./parser";
 import { instantiate } from "./variables";
 
-declare var cy: Chainable;
+declare var cy: Cypress.Chainable;
 
 /**
  * Anything that can be evaluated by evalMacros: strings, arrays of strings,
@@ -129,7 +132,7 @@ function replaceMacros(
  *
  * @deprecated will be removed in 2.0
  */
-export function getAllByName(names: string[]): Chainable {
+export function getAllByName(names: string[]): Cypress.Chainable {
   let chain = cy;
   const values = {};
   names.forEach(name => {
@@ -161,7 +164,7 @@ export function getAllByName(names: string[]): Chainable {
 export function evalMacros(
   input: Evaluatable,
   options: EvalOptions = {}
-): Chainable {
+): Cypress.Chainable {
   // defeat cypress chain semantics (which preserve the previous
   // subject if the current command returns undefined) in order
   // to let us pass through "bare" undefined as undefined.

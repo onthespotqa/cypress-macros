@@ -7,15 +7,6 @@ import * as variables from "./variables";
 type CommandCallback = (subject: any) => any;
 
 /**
- * Subset of the Cypress chainable interface used by this package.
- */
-export interface Chainable {
-  get(s0: string, options?: any): Chainable;
-  then(f0: CommandCallback): Chainable;
-  wrap(f0: any): Chainable;
-}
-
-/**
  * A lookup table that maps Cypress or macro variable names to their values.
  */
 export type Dictionary = Record<string, any>;

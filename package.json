@@ -59,6 +59,6 @@
     "junit-report-merger": "^0.0.6"
   },
   "peerDependencies": {
-    "cypress": "^4.10.0"
+    "cypress": ">4.10.0"
   }
 }

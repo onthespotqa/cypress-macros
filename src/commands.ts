@@ -143,24 +143,6 @@ export function getAllByName(names: string[]): Cypress.Chainable {
   return chain.then(() => values);
 }
 
-/**
- * Replace all macro expressions in the input with their values; resolve
- * with a copy of input where all macros have been replaced.
- *
- * Input may be a simple string, or a string array of any dimension
- * (e.g. string[], string[][], and so forth).
- *
- * @see EvalOptions for information on options.
- *
- * @example interpolate macros into a string
- *   cy.evalMacros('Hello, {user.name}') # => 'Hello, Alice'
- *
- * @example evaluate whole macro expressions as strings
- *   cy.evalMacros(['user.name', 'user.age'], {force:true}) # => ['Alice', '12']
- *
- * @example evaluate whole expressions as JavaScript values
- *   cy.evalMacros(['user.name', 'user.age'], {force:true, raw:true}) # => ['Alice', 12]
- */
 export function evalMacros(
   input: Evaluatable,
   options: EvalOptions = {}
@@ -188,5 +170,52 @@ export function evalMacros(
   return getAllByName(cvarNames).then((cvars: Dictionary) => {
     const mvars = instantiate();
     return replaceMacros(input, cvars, mvars, force, raw);
+  });
+}
+
+type Macro = any | any[];
+
+declare global {
+  /* eslint-disable-next-line @typescript-eslint/no-namespace */
+  namespace Cypress {
+    interface Chainable<Subject = any> {
+      getMacros: (value: string) => Chainable<Macro>;
+      /**
+       * Replace all macro expressions in the input with their values; resolve
+       * with a copy of input where all macros have been replaced.
+       *
+       * Input may be a simple string, or a string array of any dimension
+       * (e.g. string[], string[][], and so forth).
+       *
+       * @see EvalOptions for information on options.
+       *
+       * @example interpolate macros into a string
+       *   cy.evalMacros('Hello, {user.name}') # => 'Hello, Alice'
+       *
+       * @example evaluate whole macro expressions as strings
+       *   cy.evalMacros(['user.name', 'user.age'], {force:true}) # => ['Alice', '12']
+       *
+       * @example evaluate whole expressions as JavaScript values
+       *   cy.evalMacros(['user.name', 'user.age'], {force:true, raw:true}) # => ['Alice', 12]
+       */
+      evalMacros: (value: string, options?: EvalOptions) => Chainable<Macro>;
+    }
+  }
+}
+
+/**
+ * Register Cypress commands provided by this package. Some commands are new and
+ * some are overridden.
+ *
+ * @example install everything
+ *  commands.add();
+ */
+export function add() {
+  Cypress.Commands.add("evalMacros", { prevSubject: false }, evalMacros);
+  Cypress.Commands.add("getMacros", { prevSubject: false }, function(macros) {
+    Object.keys(macros).forEach(
+      k => !macros[k] && macros[k] !== undefined && delete macros[k]
+    );
+    return cy.evalMacros(macros, { force: true, raw: true });
   });
 }

@@ -50,13 +50,12 @@ constants than variables.
 
 ### Add Custom Command
 
-In `cypress/support/commands.js`,  add `evalMacros` as a custom command:
+In `cypress/support/commands.js`,  add the custom commands:
 
 ```js
-import { commands } from 'cypress-macros';
+import { commands as macros } from 'cypress-macros';
 
-Cypress.Commands.add('evalMacros', { prevSubject: false }, commands.evalMacros);
-Cypress.Commands.add('getAllByName', { prevSubject: false }, commands.getAllByName);
+macros.add()
 
 ```
 

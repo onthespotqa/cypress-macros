@@ -177,7 +177,19 @@ declare global {
   /* eslint-disable-next-line @typescript-eslint/no-namespace */
   namespace Cypress {
     interface Chainable<Subject = any> {
+      /**
+       * Retrieves the object bound to a raw macro
+       * This is a wrapper around cy.evalMacros
+       * 
+       *  @example interpolate macros into a string
+       *   cy.getMacros(M1) # => [{M1 Object}]
+       *
+       * @example evaluate whole macro expressions as strings
+       *   cy.getMacros([M1, M2]) # => [{M1 Object}, {M2 Object}]
+       *
+       */
       getMacros: (value: string | string[] | string[][]) => Chainable<Macro>;
+
       /**
        * Replace all macro expressions in the input with their values; resolve
        * with a copy of input where all macros have been replaced.

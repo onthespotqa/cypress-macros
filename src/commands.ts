@@ -129,10 +129,8 @@ function replaceMacros(
  * expressions and numerous other cases; it will be removed. Please use
  * `evalMacros()` with `{force:true, raw:true}` as a replacement for this
  * command.
- *
- * @deprecated will be removed in 2.0
  */
-export function getAllByName(names: string[]): Cypress.Chainable {
+function getAllByName(names: string[]): Cypress.Chainable {
   let chain = cy;
   const values = {};
   names.forEach(name => {
@@ -179,7 +177,19 @@ declare global {
   /* eslint-disable-next-line @typescript-eslint/no-namespace */
   namespace Cypress {
     interface Chainable<Subject = any> {
-      getMacros: (value: string) => Chainable<Macro>;
+      /**
+       * Retrieves the object bound to a raw macro
+       * This is a wrapper around cy.evalMacros
+       * 
+       *  @example interpolate macros into a string
+       *   cy.getMacros(M1) # => [{M1 Object}]
+       *
+       * @example evaluate whole macro expressions as strings
+       *   cy.getMacros([M1, M2]) # => [{M1 Object}, {M2 Object}]
+       *
+       */
+      getMacros: (value: string | string[] | string[][]) => Chainable<Macro>;
+
       /**
        * Replace all macro expressions in the input with their values; resolve
        * with a copy of input where all macros have been replaced.
@@ -198,7 +208,7 @@ declare global {
        * @example evaluate whole expressions as JavaScript values
        *   cy.evalMacros(['user.name', 'user.age'], {force:true, raw:true}) # => ['Alice', 12]
        */
-      evalMacros: (value: string, options?: EvalOptions) => Chainable<Macro>;
+      evalMacros: (value: string | string[] | string[][], options?: EvalOptions) => Chainable<Macro>;
     }
   }
 }

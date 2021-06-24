@@ -121,17 +121,4 @@ describe("commands", () => {
       });
     });
   });
-
-  describe("getAllByName", () => {
-    it("works", () => {
-      cy.getAllByName(["@cap", "@bat", "@iron"]).then(result => {
-        expect(result).to.have.property("@cap");
-        expect(result).to.have.property("@bat");
-        expect(result).to.have.property("@iron");
-        expect(result["@cap"].name).to.eq("Captain America");
-        expect(result["@bat"].name).to.eq("Batman");
-        expect(result["@iron"].name).to.eq("Iron Man");
-      });
-    });
-  });
 });

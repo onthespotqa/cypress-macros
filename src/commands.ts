@@ -180,7 +180,7 @@ declare global {
       /**
        * Retrieves the object bound to a raw macro
        * This is a wrapper around cy.evalMacros
-       * 
+       *
        *  @example interpolate macros into a string
        *   cy.getMacros(M1) # => [{M1 Object}]
        *
@@ -208,7 +208,10 @@ declare global {
        * @example evaluate whole expressions as JavaScript values
        *   cy.evalMacros(['user.name', 'user.age'], {force:true, raw:true}) # => ['Alice', 12]
        */
-      evalMacros: (value: string | string[] | string[][], options?: EvalOptions) => Chainable<Macro>;
+      evalMacros: (
+        value: string | string[] | string[][],
+        options?: EvalOptions
+      ) => Chainable<Macro>;
     }
   }
 }

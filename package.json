@@ -15,8 +15,8 @@
     "clean:bundle": "rimraf dist",
     "lint": "eslint src/**/*.ts",
     "lint:fix": "eslint --fix src/**/*.ts",
-    "start": "cypress open",
-    "test": "cypress run",
+    "start": "cypress open --e2e",
+    "test": "cypress run --e2e",
     "type-check": "tsc --noEmit"
   },
   "keywords": [
@@ -41,7 +41,7 @@
     "@typescript-eslint/eslint-plugin": "^1.4.0",
     "@typescript-eslint/parser": "^1.4.0",
     "babel-loader": "^8.0.5",
-    "cypress": "7.4.0",
+    "cypress": "11.2.0",
     "eslint": "^5.14.1",
     "eslint-config-prettier": "^4.0.0",
     "eslint-plugin-cypress": "^2.2.1",

@@ -17,7 +17,6 @@ module.exports = {
     'eslint:recommended',
     'plugin:@typescript-eslint/recommended',
     'plugin:cypress/recommended',
-    'prettier/@typescript-eslint',
     // NB: please leave this at the end so it can override all other rules!
     'plugin:prettier/recommended'
   ],
@@ -32,6 +31,7 @@ module.exports = {
     '@typescript-eslint/array-type': 'warn',
     '@typescript-eslint/camelcase': 'off',
     '@typescript-eslint/naming-convention': 'off',
+    '@typescript-eslint/no-unused-vars': 'off',
     '@typescript-eslint/explicit-function-return-type': 'off',
     '@typescript-eslint/explicit-member-accessibility': 'off',
     '@typescript-eslint/interface-name-prefix': 'off',

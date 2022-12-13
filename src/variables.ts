@@ -13,7 +13,7 @@ if (!Cypress._macroVariables)
   Cypress._macroVariables = {
     registry: {},
     instance: {},
-    instantiated: false
+    instantiated: false,
   };
 
 /**

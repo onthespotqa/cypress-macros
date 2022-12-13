@@ -14,14 +14,13 @@ jobs:
 
     strategy:
       matrix:
-        cypress-version: ["11", "12"]
-        node-version: ["16.x", "18.x"]
+        cypress-version: ["10", "11", "12"]
 
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: 18.x
       - run: yarn install --immutable
       - run: yarn up cypress@${{ matrix.cypress-version }}
       - run: npm test

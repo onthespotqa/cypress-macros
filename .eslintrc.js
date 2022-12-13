@@ -31,7 +31,7 @@ module.exports = {
   rules: {
     '@typescript-eslint/array-type': 'warn',
     '@typescript-eslint/camelcase': 'off',
-    '@typescript-eslint/class-name-casing': 'warn',
+    '@typescript-eslint/naming-convention': 'off',
     '@typescript-eslint/explicit-function-return-type': 'off',
     '@typescript-eslint/explicit-member-accessibility': 'off',
     '@typescript-eslint/interface-name-prefix': 'off',

@@ -76,7 +76,7 @@ describe("findMacroBoundaries", () => {
 
 describe("lex", () => {
   function all(str) {
-    const tokens = [];
+    const tokens: string[] = [];
     lex(str, {
       onMacro: t => tokens.push(`{${t}}`),
       onText: t => tokens.push(t)
@@ -85,26 +85,26 @@ describe("lex", () => {
   }
 
   it("recognizes macros and delivers them with no curlies", () => {
-    let tokens = [];
+    let tokens: string[] = [];
     lex("{hi} {bob}", { onMacro: t => tokens.push(t) });
     expect(tokens).to.eql(["hi", "bob"]);
   });
 
   it("recognizes multi-word macros", () => {
-    let tokens = [];
+    let tokens: string[] = [];
     lex("{cap.name} {cap.weapon}", { onMacro: t => tokens.push(t) });
     expect(tokens).to.eql(["cap.name", "cap.weapon"]);
   });
 
   it("recognizes plain text", () => {
-    let tokens = [];
+    let tokens: string[] = [];
     lex("{defenders} of {justice}", { onText: t => tokens.push(t) });
     expect(tokens).to.eql([" of "]);
   });
 
   it("handles json structures", () => {
-    let text = [];
-    let macros = [];
+    let text: string[] = [];
+    let macros: string[] = [];
     const onText = t => text.push(t);
     const onMacro = m => macros.push(m);
     lex("{ a: { c: { d: {nested} } }, b: {shallow} }", { onText, onMacro });

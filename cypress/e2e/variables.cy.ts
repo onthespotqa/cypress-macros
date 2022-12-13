@@ -3,7 +3,7 @@ import { variables } from "../../src";
 describe("macro variables", () => {
   describe("add", () => {
     it("requires $", () => {
-      expect(() => variables.add("foo")).to.throw(
+      expect(() => variables.add("foo", () => false)).to.throw(
         "cypress-macros: variable name 'foo' must begin with a $"
       );
     });

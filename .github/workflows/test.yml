@@ -1,0 +1,27 @@
+name: test
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  test:
+    name: test
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        cypress-version: ["11", "12"]
+        node-version: ["16.x", "18.x"]
+
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+      - run: yarn install --immutable
+      - run: yarn up cypress@${{ matrix.cypress-version }}
+      - run: npm test

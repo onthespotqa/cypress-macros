@@ -59,11 +59,11 @@ const isExpr = (input: string) => input.startsWith("{");
  */
 function findMacros(input: Evaluatable, macros: string[], force = false) {
   if (isSequence(input)) {
-    input.forEach(elem => findMacros(elem, macros, force));
+    input.forEach((elem) => findMacros(elem, macros, force));
   } else if (typeof input === "string") {
     if (force && !isExpr(input)) macros.push(input);
     lex(input, {
-      onMacro: (expr: string) => macros.push(expr)
+      onMacro: (expr: string) => macros.push(expr),
     });
   } else if (input !== null && input !== undefined) {
     throw new Error(
@@ -88,7 +88,7 @@ function replaceMacros(
   raw: boolean
 ): any {
   if (isSequence(input)) {
-    return input.map(elem => replaceMacros(elem, cvars, mvars, force, raw));
+    return input.map((elem) => replaceMacros(elem, cvars, mvars, force, raw));
   } else if (typeof input === "string") {
     const fragments = new Array<string>();
 
@@ -104,7 +104,7 @@ function replaceMacros(
     else
       lex(input, {
         onMacro,
-        onText: (text: string) => fragments.push(text)
+        onText: (text: string) => fragments.push(text),
       });
 
     if (raw && fragments.length === 1) return fragments[0];
@@ -129,10 +129,10 @@ function replaceMacros(
 function getAllByName(names: string[]): Cypress.Chainable {
   let chain = cy;
   const values = {};
-  names.forEach(name => {
+  names.forEach((name) => {
     chain = chain
       .get(name, { log: false })
-      .then(value => (values[name] = value));
+      .then((value) => (values[name] = value));
   });
   return chain.then(() => values);
 }
@@ -153,13 +153,13 @@ export function evalMacros(
   findMacros(input, macros, force);
 
   const prefixes = {};
-  macros.forEach(macro => {
+  macros.forEach((macro) => {
     const dot = macro.indexOf(".");
     const prefix = canonicalize(dot > 0 ? macro.slice(0, dot) : macro);
     prefixes[prefix] = true;
   });
 
-  const cvarNames = Object.keys(prefixes).filter(k => k.startsWith("@"));
+  const cvarNames = Object.keys(prefixes).filter((k) => k.startsWith("@"));
 
   return getAllByName(cvarNames).then((cvars: Dictionary) => {
     const mvars = instantiate();
@@ -221,9 +221,9 @@ declare global {
  */
 export function add() {
   Cypress.Commands.add("evalMacros", { prevSubject: false }, evalMacros);
-  Cypress.Commands.add("getMacros", { prevSubject: false }, function(macros) {
+  Cypress.Commands.add("getMacros", { prevSubject: false }, function (macros) {
     Object.keys(macros).forEach(
-      k => !macros[k] && macros[k] !== undefined && delete macros[k]
+      (k) => !macros[k] && macros[k] !== undefined && delete macros[k]
     );
     return cy.evalMacros(macros, { force: true, raw: true });
   });

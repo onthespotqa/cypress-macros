@@ -54,7 +54,7 @@ export function findMacroBoundaries(str: string): [number, number][] {
  * or macro expressions); call onMacro and onText as each token is encountered.
  */
 export function lex(str: string, options: LexOptions) {
-  const { onText = () => {}, onMacro = () => {} } = options;
+  const { onText = () => undefined, onMacro = () => undefined } = options;
   const boundaries = findMacroBoundaries(str);
   let initialIndex = 0;
 

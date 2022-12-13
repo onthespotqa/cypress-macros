@@ -1,5 +1,7 @@
 {
   "extends": "./.babelrc",
-  "ignore": ["**/__tests__/**/*"],
+  "ignore": [
+    "cypress/**/*.ts"
+  ],
   "sourceMaps": "inline"
 }

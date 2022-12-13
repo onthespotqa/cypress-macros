@@ -1,0 +1,4 @@
+nodejs 18.12.1
+# not really; we use yarn 3.
+# this just provides _a_ yarn binary to invoke the committed Yarn version
+yarn 1.22.19

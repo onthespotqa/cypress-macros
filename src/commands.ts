@@ -6,7 +6,7 @@ import { Dictionary } from ".";
 import { canonicalize, lex } from "./parser";
 import { instantiate } from "./variables";
 
-declare var cy: Cypress.Chainable;
+declare const cy: Cypress.Chainable;
 
 /**
  * Anything that can be evaluated by evalMacros: strings, arrays of strings,
@@ -57,11 +57,7 @@ const isExpr = (input: string) => input.startsWith("{");
  * assumed to be a macro expression in its entirety even if it does not
  * contain surrounding curly braces.
  */
-function findMacros(
-  input: Evaluatable,
-  macros: string[],
-  force: boolean = false
-) {
+function findMacros(input: Evaluatable, macros: string[], force = false) {
   if (isSequence(input)) {
     input.forEach(elem => findMacros(elem, macros, force));
   } else if (typeof input === "string") {

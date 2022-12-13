@@ -4,7 +4,7 @@ import * as variables from "./variables";
 /**
  * Parameter signature for Cypress commands that require a callback.
  */
-type CommandCallback = (subject: any) => any;
+export type CommandCallback = (subject: any) => any;
 
 /**
  * A lookup table that maps Cypress or macro variable names to their values.

@@ -8,7 +8,7 @@ interface State {
   instantiated: boolean;
 }
 
-declare var Cypress: { _macroVariables: State };
+declare let Cypress: { _macroVariables: State };
 if (!Cypress._macroVariables)
   Cypress._macroVariables = {
     registry: {},

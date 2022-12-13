@@ -44,12 +44,16 @@ describe("commands", () => {
 
     context("non-macro expressions", () => {
       it("ignores null", () => {
+        //@ts-ignore
         cy.evalMacros(null).should("eql", null);
+        //@ts-ignore
         cy.evalMacros([null]).should("eql", [null]);
       });
 
       it("ignores undefined", () => {
+        //@ts-ignore
         cy.evalMacros(undefined).should("eql", undefined);
+        //@ts-ignore
         cy.evalMacros([undefined]).should("eql", [undefined]);
       });
     });

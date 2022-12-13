@@ -29,6 +29,10 @@ jobs:
           paths:
             - ~/.cache
 
+      - run: 
+          name: Running Lint
+          command: yarn lint      
+
       # run tests!
       - run:
           name: Running Tests
